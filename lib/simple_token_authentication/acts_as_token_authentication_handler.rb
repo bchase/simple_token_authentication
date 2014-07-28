@@ -76,7 +76,9 @@ module SimpleTokenAuthentication
       if SimpleTokenAuthentication.header_names["#{entity_class.name.singularize.underscore}".to_sym].presence
         SimpleTokenAuthentication.header_names["#{entity_class.name.singularize.underscore}".to_sym][:email]
       else
-        "X-#{entity_class.name.singularize.camelize}-Email"
+        auth_key_sym = entity_class.authentication_keys.first
+        auth_key_str = auth_key_sym.to_s.camelize
+        "X-#{entity_class.name.singularize.camelize}-#{auth_key_str}"
       end
     end
   end
