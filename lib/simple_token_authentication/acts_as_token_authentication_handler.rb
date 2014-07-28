@@ -40,7 +40,11 @@ module SimpleTokenAuthentication
       email = params[params_email_name].presence
       # See https://github.com/ryanb/cancan/blob/1.6.10/lib/cancan/controller_resource.rb#L108-L111
       entity = nil
-      if entity_class.respond_to? "find_by"
+      if entity_class.respond_to? :find_by_database_authentication
+        auth_key     = entity_class.authentication_keys.first
+        auth_key_val = email # TODO
+        entity   = entity_class.find_by_database_authentication(auth_key => auth_key_val)
+      elsif entity_class.respond_to? "find_by"
         entity = email && entity_class.find_by(email: email)
       elsif entity_class.respond_to? "find_by_email"
         entity = email && entity_class.find_by_email(email)
